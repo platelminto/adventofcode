@@ -61,11 +61,11 @@ def all_dirs(root_dir: Directory) -> List[Directory]:
 
 
 if __name__ == '__main__':
-    root = generate_filesystem('input7a.txt')
+    root = generate_filesystem('input7.txt')
 
-    min_size = root.size
+    total = 0
     for d in all_dirs(root):
-        if d.size >= root.size - 40_000_000:
-            min_size = min(min_size, d.size)
+        if (s := d.size) <= 100000:
+            total += s
 
-    print(min_size)  # 2877389
+    print(total)  # 919137

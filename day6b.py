@@ -1,4 +1,4 @@
-with open('input6a.txt', 'r') as f:
+with open('input6.txt', 'r') as f:
     text = f.read()
 
 for i in range(len(text)):
