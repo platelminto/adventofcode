@@ -63,9 +63,8 @@ def all_dirs(root_dir: Directory) -> List[Directory]:
 if __name__ == '__main__':
     root = generate_filesystem('input7.txt')
 
-    total = 0
-    for d in all_dirs(root):
-        if (s := d.size) <= 100000:
-            total += s
+    total = sum(
+        [dir.size for dir in all_dirs(root) if dir.size <= 100000]
+    )
 
     print(total)  # 919137
