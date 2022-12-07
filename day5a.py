@@ -3,7 +3,7 @@ import re
 with open("input5.txt") as f:
     text = f.readlines()[10:]
 
-inital_state = [
+state = [
     '',
     'sphvfg',
     'mzdvbfjg',
@@ -16,7 +16,7 @@ inital_state = [
     'jqvpglf',
 ]
 
-state = [list(x.upper()) for x in inital_state]
+state = [list(col) for col in state]
 
 for instr in text:
     move_n, from_col, to_col = re.findall(r'\d+', instr)
@@ -24,4 +24,4 @@ for instr in text:
     for _ in range(int(move_n)):
         state[int(to_col)].insert(0, state[int(from_col)].pop(0))
 
-print(''.join([col[0] for col in state[1:]]))
+print(''.join([col[0] for col in state[1:]]))  # FCVRLMVQP
