@@ -2,7 +2,8 @@ with open('input6.txt', 'r') as f:
     text = f.read()
 
 for i in range(len(text)):
-    if len(set(text[i:i + 14])) == len(text[i:i + 14]):
+    header = text[i:i + 14]
+    if len(set(header)) == len(header):
         break
 
 print(i+14)  # 3217
