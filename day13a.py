@@ -58,32 +58,27 @@ def main():
 
     g = Graph(size)
 
-    start = -1
-    ends = []
+    start, end = -1, -1
     for i, line in enumerate(heightmap):
         for j, char in enumerate(line):
             v = i * len(line) + j
             if char == 'S':
-                ends.append(v)
+                start = v
                 heightmap[i] = heightmap[i][:j] + 'a' + heightmap[i][j+1:]
             if char == 'E':
-                start = v
+                end = v
                 heightmap[i] = heightmap[i][:j] + 'z' + heightmap[i][j + 1:]
-            if char == 'a':
-                ends.append(v)
-
 
     for i, line in enumerate(heightmap):
         for j, char in enumerate(line):
             vertex = i * len(line) + j
             for nbr_i, nbr_j in get_neighbours(i, j, len(heightmap), len(line)):
                 nbr_vertex = nbr_i * len(line) + nbr_j
-                if ord(char) - ord(heightmap[nbr_i][nbr_j]) <= 1:
+                if ord(heightmap[nbr_i][nbr_j]) - ord(char) <= 1:
                     g.edges[vertex][nbr_vertex] = True
 
-    d = dijkstra(g, start)
-    print(min([d[end] for end in ends]))
+    print(dijkstra(g, start)[end])
 
 
 if __name__ == '__main__':
-    main()  # 500
+    main()  # 504
