@@ -6,79 +6,54 @@ from functools import reduce
 from queue import PriorityQueue
 from typing import List, Callable
 
-
-class Graph:
-    def __init__(self, num_of_vertices):
-        self.v = num_of_vertices
-        self.edges = [[False for _ in range(num_of_vertices)] for _ in range(num_of_vertices)]
-        self.visited = []
+T = list[int | list]
 
 
-def dijkstra(graph, start_vertex):
-    D = {v: float('inf') for v in range(graph.v)}
-    D[start_vertex] = 0
+def right_order(og_left: list[int | T], og_right: list[int | T], left_i: int, right_i: int, parent, parent_i):
+    if left_i == len(og_left) and right_i == len(og_right):
+        return right_order(og_left)
+    if left_i == len(og_left):
+        return True
+    if right_i == len(og_right):
+        return False
 
-    pq = PriorityQueue()
-    pq.put((0, start_vertex))
+    left, right = og_left[left_i], og_right[right_i]
 
-    while not pq.empty():
-        (dist, current_vertex) = pq.get()
-        graph.visited.append(current_vertex)
+    if isinstance(left, int) and isinstance(right, int):
+        if left < right:
+            return True
+        if right < left:
+            return False
 
-        for neighbor in range(graph.v):
-            if graph.edges[current_vertex][neighbor]:
-                if neighbor not in graph.visited:
-                    old_cost = D[neighbor]
-                    new_cost = D[current_vertex] + 1
-                    if new_cost < old_cost:
-                        pq.put((new_cost, neighbor))
-                        D[neighbor] = new_cost
-    return D
+        return right_order(og_left, og_right, left_i+1, right_i+1, parent, parent_i)
 
+    if not (isinstance(left, list) and isinstance(right, list)):
+        if isinstance(left, int):
+            left = [left]
+        else:
+            right = [right]
 
-def get_neighbours(i, j, max_i, max_j):
-    neighbours = []
-    if i > 0:
-        neighbours.append((i-1, j))
-    if i < max_i-1:
-        neighbours.append((i+1, j))
-    if j > 0:
-        neighbours.append((i, j-1))
-    if j < max_j-1:
-        neighbours.append((i, j+1))
-
-    return neighbours
+    return right_order(left, right, 0, 0, parent, parent_i)
 
 
 def main():
-    with open('input12.txt', 'r') as f:
-        heightmap = [line.strip() for line in f.readlines()]
+    with open('input13.txt', 'r') as f:
+        pairs = f.read().split('\n\n')
 
-    size = len(heightmap) * len(heightmap[0])
+    index_sum = []
+    for i, pair in enumerate(pairs):
+        i = i + 1
+        print(i)
 
-    g = Graph(size)
+        left, right = pair.strip().split('\n')
+        left = json.loads(left)
+        right = json.loads(right)
 
-    start, end = -1, -1
-    for i, line in enumerate(heightmap):
-        for j, char in enumerate(line):
-            v = i * len(line) + j
-            if char == 'S':
-                start = v
-                heightmap[i] = heightmap[i][:j] + 'a' + heightmap[i][j+1:]
-            if char == 'E':
-                end = v
-                heightmap[i] = heightmap[i][:j] + 'z' + heightmap[i][j + 1:]
+        if right_order(left, right, 0, 0):
+            index_sum.append(i)
 
-    for i, line in enumerate(heightmap):
-        for j, char in enumerate(line):
-            vertex = i * len(line) + j
-            for nbr_i, nbr_j in get_neighbours(i, j, len(heightmap), len(line)):
-                nbr_vertex = nbr_i * len(line) + nbr_j
-                if ord(heightmap[nbr_i][nbr_j]) - ord(char) <= 1:
-                    g.edges[vertex][nbr_vertex] = True
-
-    print(dijkstra(g, start)[end])
+    print(index_sum)
 
 
 if __name__ == '__main__':
-    main()  # 504
+    main()  #
